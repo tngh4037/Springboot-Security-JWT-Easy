@@ -56,3 +56,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //		.and()
 //			.formLogin().disable()
 //			.httpBasic().disable()
+
+
+// [ httpBasic() ]
+// header에 다가 Authorization 이라는 키 값에 인증 정보(아이디, 패스워드)를 넣어서 전달하는 방식.
+// 참고) 매 요청마다 id, password 를 달고 요청한다. ( 보안의 위험이 있다. 따라서 반드시 HTTPS 를 사용해서 암호화 되도록 해야한다. )
+// 참고) header Authorization 에 (id, password를 통해서 만든) 토큰을 넣는 방식 -> Bearer 인증 방식.
+//
+// 참고) Basic 인증이란? Bearer 인증이란?
+//   : https://velog.io/@tosspayments/Basic-%EC%9D%B8%EC%A6%9D%EA%B3%BC-Bearer-%EC%9D%B8%EC%A6%9D%EC%9D%98-%EB%AA%A8%EB%93%A0-%EA%B2%83#basic-%EC%9D%B8%EC%A6%9D%EC%9D%B4%EB%9E%80
