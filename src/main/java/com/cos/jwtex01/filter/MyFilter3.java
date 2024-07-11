@@ -14,12 +14,12 @@ public class MyFilter3 implements Filter {
     public void doFilter(ServletRequest request,
                          ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
-        System.out.println("MyFilter3");
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        if (req.getMethod().equals("POST")) {
+        if (req.getMethod().equals("POST") && req.getRequestURI().equals("/api/v1/token")) {
+            System.out.println("MyFilter3");
             String headerAuth = req.getHeader("Authorization");
             System.out.println("headerAuth = " + headerAuth);
 
@@ -30,6 +30,8 @@ public class MyFilter3 implements Filter {
                 PrintWriter outPrintWriter = res.getWriter();
                 outPrintWriter.println("인증안됨");
             }
+        } else {
+            chain.doFilter(request, response);
         }
     }
 }

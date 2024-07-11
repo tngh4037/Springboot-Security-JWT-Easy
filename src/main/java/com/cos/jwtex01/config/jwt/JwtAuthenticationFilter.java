@@ -24,13 +24,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
+// 스프링 시큐리티에서 UsernamePasswordAuthenticationFilter 필터는, POST /login 으로 요청해서 username, password 를 전송하면, 동작한다.
+// 그런데 SecurityConfig 에서 formLogin().disable() 했으므로 UsernamePasswordAuthenticationFilter 는 동작하지 않는다.
+// 이를 작동시키기 위해서는, SecurityConfig 에 필터를 등록해주면 된다. ( addFilter(new JwtAuthenticationFilter(authenticationManager())) )
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
 	private final AuthenticationManager authenticationManager;
-	
-	// Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
-	// 인증 요청시에 실행되는 함수 => /login
+
+	// /login 요청을 하면 로그인 시도를 위해서 실행되는 함수 ( 참고. Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager )
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
