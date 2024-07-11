@@ -2,6 +2,7 @@ package com.cos.jwtex01.config;
 
 
 
+import com.cos.jwtex01.filter.MyFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.cos.jwtex01.config.jwt.JwtAuthenticationFilter;
 import com.cos.jwtex01.config.jwt.JwtAuthorizationFilter;
 import com.cos.jwtex01.repository.UserRepository;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
@@ -28,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		// http.addFilter(new MyFilter()); // error occurred ( 니가 만든 Filter 타입의 필터는 springSecurityFilterChain 에 등록이 안돼. 굳이 걸고싶으면 내 시큐리티 필터 중 특정 필터의 시작 전에 걸든 후에 걸어. (Consider using addFilterBefore or addFilterAfter instead.) ) => 해결: 바로 밑에줄
+		// http.addFilterBefore(new MyFilter(), BasicAuthenticationFilter.class); // 이렇게 걸려면 springSecurityFilterChain 에 어떤 필터들이(SecurityContextPersistenceFilter ~ FilterSecurityInterceptor) 등록는지 다 알고, 대상을 지정해야 한다. => 그리고 filter를 걸때, 이렇게 굳이 시큐리티 필터 체인에 걸지 않아도 된다. 따로 필터를 걸 수도 있다. ( FilterConfig 참고 )
+
 		http
 				.addFilter(corsConfig.corsFilter())
 				.csrf().disable()
