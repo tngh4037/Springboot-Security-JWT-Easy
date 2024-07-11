@@ -66,6 +66,7 @@ public class RestApiController {
 		return userRepository.findAll();
 	}
 	
+	// 회원가입
 	@PostMapping("join")
 	public String join(@RequestBody User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

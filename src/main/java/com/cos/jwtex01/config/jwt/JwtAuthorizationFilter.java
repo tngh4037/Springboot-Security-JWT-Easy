@@ -50,7 +50,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 			User user = userRepository.findByUsername(username);
 			
 			// 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해 
-			// 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장! ( 17:48 세션에 담지 않으면 SecurityConfig 에 설정한 권한 관리가 안됨. 스프링 시큐리티는 세션을 기반으로 권한관리를 한다. 만약에 이런 권한관리를 안할거면 굳이 세션에 담을 필요는 없다. 세션에 담는 이유는 권한 관리를 위해서이다. )
+			// 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장! ( 17:48 세션에 담지 않으면 SecurityConfig 에 설정한 권한 관리가 안됨. 스프링 시큐리티는 세션을 기반으로 권한관리를 한다. 만약에 이런 권한관리를 안할거면 굳이 세션에 담을 필요는 없다. 세션에 담는 이유는 권한 관리를 위해서이다. (굳이 JWT 토큰을 사용하면서 세션을 만들 이유가 없음. 근데 단지 권한 처리때문에 session 에 넣어준다.) )
 			PrincipalDetails principalDetails = new PrincipalDetails(user);
 			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(

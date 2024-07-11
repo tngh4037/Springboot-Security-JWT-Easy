@@ -1,5 +1,6 @@
 package com.cos.jwtex01.config.jwt;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Date;
 
@@ -43,14 +44,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		ObjectMapper om = new ObjectMapper();
 		LoginRequestDto loginRequestDto = null;
 		try {
+			/*
+			// 참고) 직접 요청 데이터를 파싱하려고 하면.... 복잡하다.
+			BufferedReader br = request.getReader();
+			String input = null;
+			while ((input = br.readLine()) != null) {
+				System.out.println("input = " + input);
+			}
+			*/
+
 			loginRequestDto = om.readValue(request.getInputStream(), LoginRequestDto.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("JwtAuthenticationFilter : "+loginRequestDto);
+		System.out.println("JwtAuthenticationFilter : " + loginRequestDto);
 		
-		// 유저네임패스워드 토큰 생성
+		// 유저네임패스워드 토큰 생성 ( 이 토큰을 기반으로 사용자 검증 )
 		UsernamePasswordAuthenticationToken authenticationToken = 
 				new UsernamePasswordAuthenticationToken(
 						loginRequestDto.getUsername(), 
@@ -68,25 +78,26 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		// Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
 		// 결론은 인증 프로바이더에게 알려줄 필요가 없음.
 		Authentication authentication = 
-				authenticationManager.authenticate(authenticationToken);
+				authenticationManager.authenticate(authenticationToken); // 참고) 내부에서 여러 처리가 진행되는데, 처리 과정 중 PrincipalDetailsService 의 loadUserByUsername 함수가 실행된다.
 		
-		PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
-		System.out.println("Authentication : "+principalDetailis.getUser().getUsername());
+		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+		System.out.println("Authentication : " + principalDetails.getUser().getUsername());
 		return authentication;
 	}
 
-	// JWT Token 생성해서 response에 담아주기
+	// attemptAuthentication 실행 후 인증이 정상적으로 되었으면 successfulAuthentication 함수가 실행된다.
+	// JWT Token 을 생성해서 response에 담아주기
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		
-		PrincipalDetails principalDetailis = (PrincipalDetails) authResult.getPrincipal();
+		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 		
 		String jwtToken = JWT.create()
-				.withSubject(principalDetailis.getUsername())
+				.withSubject(principalDetails.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
-				.withClaim("id", principalDetailis.getUser().getId())
-				.withClaim("username", principalDetailis.getUser().getUsername())
+				.withClaim("id", principalDetails.getUser().getId())
+				.withClaim("username", principalDetails.getUser().getUsername())
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 		
 		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
