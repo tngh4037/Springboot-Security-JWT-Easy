@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
-// @CrossOrigin  // CORS 허용 
+// @CrossOrigin  // CORS 허용 ( 참고. 이 애노테이션은 인증이 필요하지 않은 요청만 허용된다. security 인증이 필요한 경로의 요청(로그인을 해야지만 할수있는 요청)에 대해서는 이 애노테이션으로는 해결되지 않는다. 이 경우, CorsFilter 와 같이 설정해주고 시큐리티 필터에 등록해주어야 한다. )
 public class RestApiController {
 	
 	private final UserRepository userRepository;

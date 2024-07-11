@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http
 				.addFilter(corsConfig.corsFilter())
 				.csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않겠다. (stateless 서버로 만들겠다.)
 			.and()
 				.formLogin().disable()
 				.httpBasic().disable()
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
 				.authorizeRequests()
 				.antMatchers("/api/v1/user/**")
-				.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+					.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
 				.antMatchers("/api/v1/manager/**")
 					.access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
 				.antMatchers("/api/v1/admin/**")
@@ -49,8 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	}
 }
 
-
-
-
-
-
+// [ JWT 서버를 만들때 기본 고정 포맷 ]
+//		http
+//			.csrf().disable()
+//			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//		.and()
+//			.formLogin().disable()
+//			.httpBasic().disable()
