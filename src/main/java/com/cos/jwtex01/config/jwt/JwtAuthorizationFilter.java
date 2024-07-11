@@ -58,7 +58,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 							null, // 패스워드는 모르니까 null 처리, 어차피 지금 인증하는게 아니니까!!
 							principalDetails.getAuthorities());
 			
-			// 강제로 시큐리티의 세션에 접근하여 값 저장
+			// 강제로 시큐리티의 세션에 접근하여 값 저장 ( 의문 : 근데 이게 세션인가 ? 메모리 라고 생각하는게 더 맞아보임. | 참고) https://www.inflearn.com/questions/714149/jwt-token-%EA%B5%AC%ED%98%84%EC%97%90%EC%84%9C-session-%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%9C%EB%8B%A4 )
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 	
